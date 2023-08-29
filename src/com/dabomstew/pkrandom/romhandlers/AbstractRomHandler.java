@@ -5291,15 +5291,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 
         Collections.shuffle(newItems, this.random);
         Collections.shuffle(newTMs, this.random);
-
-        List<Integer> oldItems = this.getRegularFieldItems();
-        String[] itemNames = this.getItemNames();
-        for (int i = 0; i < oldItems.size(); i++) {
-            String oldName = itemNames[oldItems.get(i)];
-            String newName = itemNames[newItems.get(i)];
-            System.out.println(oldName + " => " + newName);
-        }
-
+        
         this.setRegularFieldItems(newItems);
         this.setFieldTMs(newTMs);
     }
