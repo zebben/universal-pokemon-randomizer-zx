@@ -4161,47 +4161,7 @@ public class Gen4RomHandler extends AbstractDSRomHandler {
         return GlobalConstants.getStatChanges(generation);
     }
 
-    private void populateEvolutions() {
-        for (Pokemon pkmn : pokes) {
-            if (pkmn != null) {
-                pkmn.evolutionsFrom.clear();
-                pkmn.evolutionsTo.clear();
-            }
-        }
-
-        // Read NARC
-        try {
-            NARCArchive evoNARC = readNARC(romEntry.getFile("PokemonEvolutions"));
-            for (int i = 1; i <= Gen4Constants.pokemonCount; i++) {
-                Pokemon pk = pokes[i];
-                byte[] evoEntry = evoNARC.files.get(i);
-                for (int evo = 0; evo < 7; evo++) {
-                    int method = readWord(evoEntry, evo * 6);
-                    int species = readWord(evoEntry, evo * 6 + 4);
-                    if (method >= 1 && method <= Gen4Constants.evolutionMethodCount && species >= 1) {
-                        EvolutionType et = EvolutionType.fromIndex(4, method);
-                        int extraInfo = readWord(evoEntry, evo * 6 + 2);
-                        Evolution evol = new Evolution(pokes[i], pokes[species], true, et, extraInfo);
-                        if (!pk.evolutionsFrom.contains(evol)) {
-                            pk.evolutionsFrom.add(evol);
-                            pokes[species].evolutionsTo.add(evol);
-                        }
-                    }
-                }
-                // Split evos shouldn't carry stats unless the evo is Nincada's
-                // In that case, we should have Ninjask carry stats
-                if (pk.evolutionsFrom.size() > 1) {
-                    for (Evolution e : pk.evolutionsFrom) {
-                        if (e.type != EvolutionType.LEVEL_CREATE_EXTRA) {
-                            e.carryStats = false;
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            throw new RandomizerIOException(e);
-        }
-    }
+    private void populateEvolutions() {}
 
     private void writeEvolutions() {
         try {
