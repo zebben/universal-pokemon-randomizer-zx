@@ -2908,19 +2908,17 @@ public class Gen4RomHandler extends AbstractDSRomHandler {
     @Override
     public void setTrainers(List<Trainer> trainerData, boolean doubleBattleMode) {
         if (romEntry.romType == Gen4Constants.Type_HGSS) {
-            fixAbilitySlotValuesForHGSS(trainerData);
+            //fixAbilitySlotValuesForHGSS(trainerData);
         }
         Iterator<Trainer> allTrainers = trainerData.iterator();
         try {
             NARCArchive trainers = this.readNARC(romEntry.getFile("TrainerData"));
-            NARCArchive trpokes = new NARCArchive();
 
             // Get current movesets in case we need to reset them for certain
             // trainer mons.
             Map<Integer, List<MoveLearnt>> movesets = this.getMovesLearnt();
 
             // empty entry
-            trpokes.files.add(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
             int trainernum = trainers.files.size();
             for (int i = 1; i < trainernum; i++) {
                 byte[] trainer = trainers.files.get(i);
@@ -2941,61 +2939,9 @@ public class Gen4RomHandler extends AbstractDSRomHandler {
                         }
                     }
                 }
-
-                int bytesNeeded = 6 * numPokes;
-                if (romEntry.romType != Gen4Constants.Type_DP) {
-                    bytesNeeded += 2 * numPokes;
-                }
-                if (tr.pokemonHaveCustomMoves()) {
-                    bytesNeeded += 8 * numPokes; // 2 bytes * 4 moves
-                }
-                if (tr.pokemonHaveItems()) {
-                    bytesNeeded += 2 * numPokes;
-                }
-                byte[] trpoke = new byte[bytesNeeded];
-                int pokeOffs = 0;
-                Iterator<TrainerPokemon> tpokes = tr.pokemon.iterator();
-                for (int poke = 0; poke < numPokes; poke++) {
-                    TrainerPokemon tp = tpokes.next();
-                    int ability = tp.abilitySlot << 4;
-                    if (tp.abilitySlot == 1) {
-                        // All Gen 4 games represent the first ability as ability 0.
-                        ability = 0;
-                    }
-                    // Add 1 to offset integer division truncation
-                    int difficulty = Math.min(255, 1 + (tp.IVs * 255) / 31);
-                    writeWord(trpoke, pokeOffs, difficulty | ability << 8);
-                    writeWord(trpoke, pokeOffs + 2, tp.level);
-                    writeWord(trpoke, pokeOffs + 4, tp.pokemon.number);
-                    trpoke[pokeOffs + 5] |= (tp.forme << 2);
-                    pokeOffs += 6;
-                    if (tr.pokemonHaveItems()) {
-                        writeWord(trpoke, pokeOffs, tp.heldItem);
-                        pokeOffs += 2;
-                    }
-                    if (tr.pokemonHaveCustomMoves()) {
-                        if (tp.resetMoves) {
-                            int[] pokeMoves = RomFunctions.getMovesAtLevel(getAltFormeOfPokemon(tp.pokemon, tp.forme).number, movesets, tp.level);
-                            for (int m = 0; m < 4; m++) {
-                                writeWord(trpoke, pokeOffs + m * 2, pokeMoves[m]);
-                            }
-                        } else {
-                            writeWord(trpoke, pokeOffs, tp.moves[0]);
-                            writeWord(trpoke, pokeOffs + 2, tp.moves[1]);
-                            writeWord(trpoke, pokeOffs + 4, tp.moves[2]);
-                            writeWord(trpoke, pokeOffs + 6, tp.moves[3]);
-                        }
-                        pokeOffs += 8;
-                    }
-                    // Plat/HGSS have another random pokeOffs +=2 here.
-                    if (romEntry.romType != Gen4Constants.Type_DP) {
-                        pokeOffs += 2;
-                    }
-                }
-                trpokes.files.add(trpoke);
             }
+
             this.writeNARC(romEntry.getFile("TrainerData"), trainers);
-            this.writeNARC(romEntry.getFile("TrainerPokemon"), trpokes);
 
             // In Gen 4, the game prioritizes showing the special double battle intro over almost any
             // other kind of intro. Since the trainer music is tied to the intro, this results in the
