@@ -1088,8 +1088,8 @@ public class Gen4RomHandler extends AbstractDSRomHandler {
 
     @Override
     protected void savingROM() {
-        savePokemonStats();
-        saveMoves();
+        //savePokemonStats();
+        //saveMoves();
         try {
             writeARM9(arm9);
         } catch (IOException e) {
@@ -2826,6 +2826,8 @@ public class Gen4RomHandler extends AbstractDSRomHandler {
                 int numPokes = trainer[3] & 0xFF;
                 int pokeOffs = 0;
                 tr.fullDisplayName = tclasses.get(tr.trainerclass) + " " + tnames.get(i - 1);
+                System.out.println(i);
+                System.out.println(tr.fullDisplayName);
                 for (int poke = 0; poke < numPokes; poke++) {
                     // Structure is
                     // IV SB LV LV SP SP FRM FRM
@@ -2916,7 +2918,7 @@ public class Gen4RomHandler extends AbstractDSRomHandler {
 
             // Get current movesets in case we need to reset them for certain
             // trainer mons.
-            Map<Integer, List<MoveLearnt>> movesets = this.getMovesLearnt();
+//            Map<Integer, List<MoveLearnt>> movesets = this.getMovesLearnt();
 
             // empty entry
             int trainernum = trainers.files.size();

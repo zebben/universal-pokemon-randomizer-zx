@@ -39,8 +39,8 @@ public class Gen4Constants {
 
     public static final int arm9Offset = 0x02000000;
 
-    public static final int pokemonCount = 493, moveCount = 467;
-    private static final int dpFormeCount = 5, platHgSsFormeCount = 12;
+    public static final int pokemonCount = 1025, moveCount = 922;
+    private static final int dpFormeCount = 5, platHgSsFormeCount = 107;
     public static final int formeOffset = 2;
 
     public static final int bsHPOffset = 0, bsAttackOffset = 1, bsDefenseOffset = 2, bsSpeedOffset = 3,
