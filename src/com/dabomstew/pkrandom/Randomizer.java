@@ -79,9 +79,6 @@ public class Randomizer {
         // set double battle mode
         romHandler.doubleBattleMode();
 
-        // Record check value?
-        romHandler.writeCheckValueToROM(checkValue);
-
         // Save
         if (saveAsDirectory) {
             romHandler.saveRomDirectory(filename);

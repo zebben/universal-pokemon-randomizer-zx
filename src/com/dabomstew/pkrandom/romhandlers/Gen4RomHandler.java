@@ -2916,19 +2916,15 @@ public class Gen4RomHandler extends AbstractDSRomHandler {
         try {
             NARCArchive trainers = this.readNARC(romEntry.getFile("TrainerData"));
 
-            // Get current movesets in case we need to reset them for certain
-            // trainer mons.
-//            Map<Integer, List<MoveLearnt>> movesets = this.getMovesLearnt();
-
             // empty entry
             int trainernum = trainers.files.size();
             for (int i = 1; i < trainernum; i++) {
                 byte[] trainer = trainers.files.get(i);
                 Trainer tr = allTrainers.next();
                 // preserve original poketype
-                trainer[0] = (byte) tr.poketype;
-                int numPokes = tr.pokemon.size();
-                trainer[3] = (byte) numPokes;
+//                trainer[0] = (byte) tr.poketype;
+//                int numPokes = tr.pokemon.size();
+//                trainer[3] = (byte) numPokes;
 
                 if (doubleBattleMode) {
                     if (!tr.skipImportant()) {
@@ -2955,7 +2951,7 @@ public class Gen4RomHandler extends AbstractDSRomHandler {
             // Then, also patch various subroutines that control the "Trainer Eye" event and text boxes
             // related to this in order to make double battles work on all trainers
             if (doubleBattleMode) {
-                String doubleBattleFixPrefix = Gen4Constants.getDoubleBattleFixPrefix(romEntry.romType);
+                String doubleBattleFixPrefix = Gen4Constants.getDoubleBattleFixPrefix(romEntry.romType); // 2C2815D00221214201
                 int offset = find(arm9, doubleBattleFixPrefix);
                 if (offset > 0) {
                     offset += doubleBattleFixPrefix.length() / 2; // because it was a prefix
@@ -3014,10 +3010,10 @@ public class Gen4RomHandler extends AbstractDSRomHandler {
                 // Changing this byte from 4 -> 0 makes it check if the "double battle" flag is exactly 2 instead of
                 // checking "flag & 2", which makes the single trainer double battles use the single battle
                 // handling (since we set their flag to 3 instead of 2)
-                NARCArchive battleSkillSubSeq = readNARC(romEntry.getFile("BattleSkillSubSeq"));
-                byte[] trainerEndFile = battleSkillSubSeq.files.get(romEntry.getInt("TrainerEndFileNumber"));
-                trainerEndFile[romEntry.getInt("TrainerEndTextBoxOffset")] = 0;
-                writeNARC(romEntry.getFile("BattleSkillSubSeq"), battleSkillSubSeq);
+//                NARCArchive battleSkillSubSeq = readNARC(romEntry.getFile("BattleSkillSubSeq"));
+//                byte[] trainerEndFile = battleSkillSubSeq.files.get(romEntry.getInt("TrainerEndFileNumber"));
+//                trainerEndFile[romEntry.getInt("TrainerEndTextBoxOffset")] = 0;
+//                writeNARC(romEntry.getFile("BattleSkillSubSeq"), battleSkillSubSeq);
 
             }
         } catch (IOException ex) {
